@@ -5,5 +5,4 @@ const response = await db.query(
 );
 
 console.log(response);
-
 db.end();
