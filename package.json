@@ -9,7 +9,12 @@
     "db:createusers": "node -r dotenv/config ./db/scripts/users/createTable.js",
     "db:populateusers": "node -r dotenv/config ./db/scripts/users/populateTable.js",
     "dev": "nodemon -r dotenv/config ./bin/www.js",
-    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js"
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "db:deleteUsers": "node -r dotenv/config ./db/scripts/deleteAllTables.js",
+    "db:createlocations": "node -r dotenv/config ./db/scripts/locations/createTable.js",
+    "db:createparticipants": "node -r dotenv/config ./db/scripts/participants/createTable.js",
+    "db:createactivities": "node -r dotenv/config ./db/scripts/activities/createTable.js",
+    "db:createalltables": "npm run db:createusers && npm run db:createlocations && npm run db:createactivities && npm run db:createparticipants"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
