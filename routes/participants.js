@@ -5,15 +5,19 @@ const router = express.Router();
 
 /* PUT participants - create or update a row on the particpants table */
 router.put("/", async function (req, res, next) {
-  const userId = req.body.userId;
-  const activityId = req.body.activityId;
-  const role = req.body.role;
-  const users = await upsertPartcipantsRow(userId, activityId, role);
+  try {
+    const userId = req.body.userId;
+    const activityId = req.body.activityId;
+    const role = req.body.role;
+    const users = await upsertPartcipantsRow(userId, activityId, role);
 
-  res.json({
-    success: true,
-    payload: users,
-  });
+    res.json({
+      success: true,
+      payload: users,
+    });
+  } catch (error) {
+    next(error);
+  }
 });
 
 export default router;

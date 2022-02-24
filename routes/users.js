@@ -5,12 +5,16 @@ const router = express.Router();
 
 /* GET users listing. */
 router.get("/", async function (req, res, next) {
-  const users = await getAllUsers();
+  try {
+    const users = await getAllUsers();
 
-  res.json({
-    success: true,
-    payload: users
-  });
+    res.json({
+      success: true,
+      payload: users,
+    });
+  } catch (error) {
+    next(error);
+  }
 });
 
 export default router;
