@@ -12,3 +12,27 @@ export async function getAllActivities(location, type, date) {
   );
   return result.rows;
 }
+
+export async function createNewActivity(
+  organiser_id,
+  location_id,
+  max_attendees,
+  date_time,
+  description,
+  type
+) {
+  const sqlString = `INSERT INTO activities
+  (organiser_id, location_id, max_attendees, date_time, description, type)
+  VALUES ($1, $2, $3, $4, $5, $6)
+  RETURNING *;
+  `;
+  const result = await db.query(sqlString, [
+    organiser_id,
+    location_id,
+    max_attendees,
+    date_time,
+    description,
+    type,
+  ]);
+  return result.rows;
+}
