@@ -9,7 +9,7 @@
     "db:createusers": "node -r dotenv/config ./db/scripts/users/createTable.js",
     "db:populateusers": "node -r dotenv/config ./db/scripts/users/populateTable.js",
     "dev": "nodemon -r dotenv/config ./bin/www.js",
-    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "test": "node -r dotenv/config --experimental-vm-modules node_modules/jest/bin/jest.js",
     "db:deleteAllTables": "node -r dotenv/config ./db/scripts/deleteAllTables.js",
     "db:createlocations": "node -r dotenv/config ./db/scripts/locations/createTable.js",
     "db:populatelocations": "node -r dotenv/config ./db/scripts/locations/populateTable.js",
