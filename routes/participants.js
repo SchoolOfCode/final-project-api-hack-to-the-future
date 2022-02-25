@@ -1,7 +1,25 @@
 import express from "express";
-import { upsertPartcipantsRow } from "../models/participants.js";
+import {
+  upsertPartcipantsRow,
+  getActivitiesByRole,
+} from "../models/participants.js";
 
 const router = express.Router();
+
+/* GET participants - get all activities for a user based on role */
+router.get("/", async function (req, res, next) {
+  try {
+    const user_id = req.body.user_id;
+    const participant_role = req.body.participant_role;
+    const activities = await getActivitiesByRole(user_id, participant_role);
+    res.json({
+      success: true,
+      payload: activities,
+    });
+  } catch (rror) {
+    next(error);
+  }
+});
 
 /* PUT participants - create or update a row on the particpants table */
 router.put("/", async function (req, res, next) {
