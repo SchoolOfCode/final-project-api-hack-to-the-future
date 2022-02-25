@@ -7,7 +7,8 @@ import {
 const router = express.Router();
 
 /* GET participants - get all activities for a user based on role */
-router.get("/", async function (req, res, next) {
+// CHANGED TO PATCH FOR NOW - SO FRONTEND CAN MAKE A FETCH REQUEST -- CHANGE!!!
+router.patch("/", async function (req, res, next) {
   try {
     const user_id = req.body.user_id;
     const participant_role = req.body.participant_role;
@@ -16,7 +17,7 @@ router.get("/", async function (req, res, next) {
       success: true,
       payload: activities,
     });
-  } catch (rror) {
+  } catch (error) {
     next(error);
   }
 });
