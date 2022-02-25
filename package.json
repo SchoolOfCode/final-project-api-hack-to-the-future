@@ -17,7 +17,7 @@
     "db:createactivities": "node -r dotenv/config ./db/scripts/activities/createTable.js",
     "db:populateactivities": "node -r dotenv/config ./db/scripts/activities/populateTable.js",
     "db:createalltables": "npm run db:createusers && npm run db:createactivities && npm run db:createparticipants",
-    "db:populateAllTables": "npm run db:populateusers && npm run db:populatelocations && npm run db:populateactivities"
+    "db:populateAllTables": "npm run db:populateusers && npm run db:populateactivities"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
