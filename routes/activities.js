@@ -26,14 +26,14 @@ router.get("/", async function (req, res, next) {
 router.post("/", async function (req, res, next) {
   try {
     const organiser_id = req.body.organiser_id;
-    const location_id = req.body.location_id;
+    const location_name = req.body.location_name;
     const max_attendees = req.body.max_attendees;
     const date_time = req.body.date_time;
     const description = req.body.description;
     const type = req.body.type;
     const newActivity = await createNewActivity(
       organiser_id,
-      location_id,
+      location_name,
       max_attendees,
       date_time,
       description,
