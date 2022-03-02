@@ -1,5 +1,11 @@
 import request from "supertest";
 import app from "../app.js";
+import { server } from "../bin/www.js";
+
+afterAll((done) => {
+  server.close();
+  done();
+});
 
 // tests whether the GET route for getAllActivities returns an array of all activities.
 
@@ -52,6 +58,37 @@ describe("GET /activities", function () {
     const actual = await request(app)
       .get("/activities?type=walk")
       .set("Authorization", "test_user_id");
+    expect(actual.body).toStrictEqual(expectedBody);
+    expect(actual.statusCode).toBe(200);
+  });
+});
+
+describe("POST /activities", function () {
+  test("it creates a new activity in the database and returns its data", async function () {
+    const expectedBody = {
+      success: true,
+      payload: [
+        {
+          activity_id: expect.any(Number),
+          date_time: "2022-02-27T09:38:38.393Z",
+          description: "Let's get Korean food for lunch.",
+          location_name: "Manchester",
+          max_attendees: 4,
+          organiser_id: "1",
+          type: "restaurant",
+        },
+      ],
+    };
+    const actual = await request(app)
+      .post("/activities")
+      .set("Authorization", "1")
+      .send({
+        location_name: "Manchester",
+        max_attendees: 4,
+        date_time: "2022-02-27T09:38:38.393Z",
+        description: "Let's get Korean food for lunch.",
+        type: "restaurant",
+      });
     expect(actual.body).toStrictEqual(expectedBody);
     expect(actual.statusCode).toBe(200);
   });
