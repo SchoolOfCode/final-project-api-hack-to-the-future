@@ -27,3 +27,27 @@ describe("GET /users", function () {
     expect(actual.statusCode).toBe(200);
   });
 });
+
+describe("PUT /users", function () {
+  test("when a current user is sent, only their data is returned", async function () {
+    const expectedBody = {
+      success: true,
+      payload: [
+        {
+          email: "paddington@bear.com",
+          user_id: "1",
+          user_name: "Paddington Bear",
+        },
+      ],
+    };
+    const actual = await request(app)
+      .put("/users")
+      .set("Authorization", "1")
+      .send({
+        email: "paddington@bear.com",
+        user_name: "Paddington Bear",
+      });
+    expect(actual.body).toStrictEqual(expectedBody);
+    expect(actual.statusCode).toBe(200);
+  });
+});
