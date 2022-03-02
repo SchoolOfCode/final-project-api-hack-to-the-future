@@ -50,4 +50,31 @@ describe("PUT /users", function () {
     expect(actual.body).toStrictEqual(expectedBody);
     expect(actual.statusCode).toBe(200);
   });
+
+  test("when a new user is sent, their data is added to the database", async function () {
+    const randomId = String(
+      Math.floor(Math.random() * Number.MAX_SAFE_INTEGER)
+    );
+    const email = "rupert@bear.net";
+    const user_name = "Rupert Bear";
+    const expectedBody = {
+      success: true,
+      payload: [
+        {
+          email: email,
+          user_id: randomId,
+          user_name: user_name,
+        },
+      ],
+    };
+    const actual = await request(app)
+      .put("/users")
+      .set("Authorization", randomId)
+      .send({
+        email: email,
+        user_name: user_name,
+      });
+    expect(actual.body).toStrictEqual(expectedBody);
+    expect(actual.statusCode).toBe(200);
+  });
 });
