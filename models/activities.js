@@ -7,7 +7,7 @@ export async function getAllActivities(location, type, date, user_id) {
     FROM activities 
         LEFT JOIN users on users.user_id=activities.organiser_id 
         LEFT JOIN participants on activities.activity_id=participants.activity_id
-    WHERE ($4 != participants.user_id)
+    WHERE (participants.user_id != $4 OR participants.user_id is null)
     AND ($1::text is null OR $1::text = activities.type)
     AND ($2::text is null OR $2::text = activities.location_name)
     AND ($3::timestamp is null OR $3::timestamp = activities.date_time);`,
