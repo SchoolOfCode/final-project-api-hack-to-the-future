@@ -10,7 +10,7 @@ afterAll((done) => {
 // tests whether the GET route for getAllActivities returns an array of all activities.
 
 describe("GET /activities", function () {
-  // test 1 - checks success: true and payload: an array of objects
+  // test 1
   test("gives us an object with success: true and payload: an array", async function () {
     const expectedBody = {
       success: true,
@@ -36,6 +36,33 @@ describe("GET /activities", function () {
     expect(actual.statusCode).toBe(200);
   });
 
+  // test 2
+  test("gives us an object with success: true and payload: an array for participant 2", async function () {
+    const expectedBody = {
+      success: true,
+      payload: expect.arrayContaining([
+        expect.objectContaining({
+          activity_id: expect.any(Number),
+          organiser_id: expect.any(String),
+          max_attendees: expect.any(Number),
+          date_time: expect.any(String),
+          description: expect.any(String),
+          type: expect.any(String),
+          user_id: expect.any(String),
+          user_name: expect.any(String),
+          email: expect.any(String),
+          location_name: expect.any(String),
+        }),
+      ]),
+    };
+    const actual = await request(app)
+      .get("/activities")
+      .set("Authorization", "2");
+    expect(actual.body).toStrictEqual(expectedBody);
+    expect(actual.statusCode).toBe(200);
+  });
+
+  // test 3
   test("gives us back the activities that match the selected filters", async function () {
     const expectedBody = {
       success: true,
@@ -62,6 +89,8 @@ describe("GET /activities", function () {
     expect(actual.statusCode).toBe(200);
   });
 });
+
+// tests for POST route
 
 describe("POST /activities", function () {
   test("it creates a new activity in the database and returns its data", async function () {
