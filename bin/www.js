@@ -25,10 +25,13 @@ app.set("port", port);
 export const server = http.createServer(app);
 
 /**
- * Listen on provided port, on all network interfaces.
+ * Listen on provided port, on all network interfaces, unless in testing environment.
  */
 
-server.listen(port);
+if (process.env.NODE_ENV !== "test") {
+  server.listen(port);
+}
+
 server.on("error", onError);
 server.on("listening", onListening);
 

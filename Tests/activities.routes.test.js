@@ -1,10 +1,9 @@
 import request from "supertest";
 import app from "../app.js";
-import { server } from "../bin/www.js";
+import db from "../db/connection.js";
 
-afterAll((done) => {
-  server.close();
-  done();
+afterAll(async () => {
+  await db.end();
 });
 
 // tests whether the GET route for getAllActivities returns an array of all activities.

@@ -1,10 +1,9 @@
 import request from "supertest";
 import app from "../app.js";
-import { server } from "../bin/www.js";
+import db from "../db/connection.js";
 
-afterAll((done) => {
-  server.close();
-  done();
+afterAll(async () => {
+  await db.end();
 });
 
 // check that the GET users fetches all users
