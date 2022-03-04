@@ -8,6 +8,10 @@ on:
     branches: [ dev, main ]
   pull_request:
     branches: [ dev, main ]
+    
+env:
+  TESTING_DATABASE_URL: postgres://tjayyewijdrusi:b4f1e253811061c93ae47af331caa93286845e431cd7ddc31f7407d08cc7b571@ec2-99-80-108-106.eu-west-1.compute.amazonaws.com:5432/db70h56a7h49sd
+  NODE_ENV: test
 
 jobs:
   build:
@@ -29,9 +33,3 @@ jobs:
     - run: npm ci
     - run: npm run build --if-present
     - run: npm test
-  job2:
-    runs-on: ubuntu-latest 
-    steps:
-      - name: step 1
-        ## Reference your environment variables
-        run: echo "The DB key is:${{secrets.TESTING_DATABASE_URL}}" 
