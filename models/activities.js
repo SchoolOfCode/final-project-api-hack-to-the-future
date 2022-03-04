@@ -1,13 +1,17 @@
 import db from "../db/connection.js";
 
-export async function getAllActivities(location, type, date) {
+export async function getAllActivities(location, type, date, user_id) {
   const result = await db.query(
-    `SELECT * FROM activities 
-    LEFT JOIN users on users.user_id=activities.organiser_id 
-    WHERE ($1::text is null OR $1::text = activities.type)
+    `SELECT DISTINCT activities.activity_id, activities.organiser_id, activities.location_name, activities.max_attendees, activities.date_time, activities.description, 
+    activities.type, users.user_id, users.user_name, users.email 
+    FROM activities 
+        LEFT JOIN users on users.user_id=activities.organiser_id 
+        LEFT JOIN participants on activities.activity_id=participants.activity_id
+    WHERE (participants.user_id != $4 OR participants.user_id is null)
+    AND ($1::text is null OR $1::text = activities.type)
     AND ($2::text is null OR $2::text = activities.location_name)
     AND ($3::timestamp is null OR $3::timestamp = activities.date_time);`,
-    [type, location, date]
+    [type, location, date, user_id]
   );
   return result.rows;
 }

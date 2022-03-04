@@ -9,7 +9,7 @@
     "db:createusers": "node -r dotenv/config ./db/scripts/users/createTable.js",
     "db:populateusers": "node -r dotenv/config ./db/scripts/users/populateTable.js",
     "dev": "nodemon -r dotenv/config ./bin/www.js",
-    "test": "node -r dotenv/config --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "test": "cross-env NODE_ENV=test node -r dotenv/config --experimental-vm-modules node_modules/jest/bin/jest.js",
     "db:deleteAllTables": "node -r dotenv/config ./db/scripts/deleteAllTables.js",
     "db:createlocations": "node -r dotenv/config ./db/scripts/locations/createTable.js",
     "db:populatelocations": "node -r dotenv/config ./db/scripts/locations/populateTable.js",
@@ -17,7 +17,8 @@
     "db:createactivities": "node -r dotenv/config ./db/scripts/activities/createTable.js",
     "db:populateactivities": "node -r dotenv/config ./db/scripts/activities/populateTable.js",
     "db:createalltables": "npm run db:createusers && npm run db:createactivities && npm run db:createparticipants",
-    "db:populateAllTables": "npm run db:populateusers && npm run db:populateactivities"
+    "db:populateAllTables": "npm run db:populateusers && npm run db:populateactivities",
+    "db:setup-test-db": "cross-env-shell NODE_ENV=test \"npm run db:createalltables && npm run db:populateAllTables\""
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
@@ -28,9 +29,10 @@
     "pg": "^8.7.1"
   },
   "devDependencies": {
+    "cross-env": "^7.0.3",
     "dotenv": "^10.0.0",
-    "nodemon": "^2.0.15",
     "jest": "^27.4.5",
+    "nodemon": "^2.0.15",
     "supertest": "^6.1.6"
   }
 }
