@@ -10,8 +10,8 @@ on:
     branches: [ dev, main ]
     
 env:
-  TESTING_DATABASE_URL: postgres://tjayyewijdrusi:b4f1e253811061c93ae47af331caa93286845e431cd7ddc31f7407d08cc7b571@ec2-99-80-108-106.eu-west-1.compute.amazonaws.com:5432/db70h56a7h49sd
-  NODE_ENV: test
+  TESTING_DATABASE_URL: ${{ secrets.TESTING_DATABASE_URL }}
+  NODE_ENV: ${{ secrets.NODE_ENV }}
 
 jobs:
   build:
