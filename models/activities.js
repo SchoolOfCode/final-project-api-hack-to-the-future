@@ -37,5 +37,16 @@ export async function createNewActivity(
     description,
     type,
   ]);
+
+  //add organiser as "attending" on the participants table
+  const activity_id = result.rows[0].activity_id;
+  await db.query(
+    `INSERT INTO participants 
+  (user_id ,activity_id, participant_role)
+  VALUES ($1, $2, $3) 
+  ON CONFLICT (user_id, activity_id) DO UPDATE SET participant_role = $3 RETURNING *;`,
+    [organiser_id, activity_id, "attending"]
+  );
+
   return result.rows;
 }
