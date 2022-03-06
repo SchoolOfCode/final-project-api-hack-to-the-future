@@ -1,0 +1,1102 @@
+{
+	"info": {
+		"_postman_id": "6179ae3a-3aa9-47d4-867f-ebb8a0a8d3a8",
+		"name": "Apptivity e2e tests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Scenario 1",
+			"item": [
+				{
+					"name": "User A signs up",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const a = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);\r",
+									"\r",
+									"pm.environment.set(\"aID\", `${a}`);\r",
+									"pm.environment.set(\"aName\", pm.variables.replaceIn('{{$randomFullName}}'));\r",
+									"pm.environment.set(\"aEmail\", pm.variables.replaceIn('{{$randomEmail}}'));"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let responsePayload = pm.response.json().payload;\r",
+									"\r",
+									"pm.test(\"Response has status code 200\", () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Response contains specified user data.\", () => {\r",
+									"    pm.expect(responsePayload[0]).to.have.ownProperty(\"user_name\"); \r",
+									"    pm.expect(responsePayload[0].user_name).to.equal(pm.environment.get(\"aName\"));\r",
+									"    pm.expect(responsePayload[0]).to.have.ownProperty(\"email\"); \r",
+									"    pm.expect(responsePayload[0].email).to.equal(pm.environment.get(\"aEmail\"));\r",
+									"    pm.expect(responsePayload[0]).to.have.ownProperty(\"user_id\"); \r",
+									"    pm.expect(responsePayload[0].user_id).to.equal(pm.environment.get(\"aID\"));\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{aID}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"user_name\": \"{{aName}}\",\r\n    \"email\": \"{{aEmail}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Verify User A has been added",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responsePayload = pm.response.json().payload;\r",
+									" \r",
+									"pm.test(\"Response has status code 200\", () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Response contains specified user data.\", () => {\r",
+									"    pm.expect(responsePayload).to.deep.include({\r",
+									"        \"user_id\": pm.environment.get(\"aID\"),\r",
+									"        \"user_name\": pm.environment.get(\"aName\"),\r",
+									"        \"email\": pm.environment.get(\"aEmail\")\r",
+									"    })\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "verifying",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User A creates Activity1",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"activity1_location\", pm.variables.replaceIn('{{$randomCity}}'));\r",
+									"pm.environment.set(\"activity1_attendees\", Number(pm.variables.replaceIn('{{$randomInt}}')));\r",
+									"pm.environment.set(\"activity1_datetime\", pm.variables.replaceIn('{{$isoTimestamp}}'));\r",
+									"pm.environment.set(\"activity1_description\", pm.variables.replaceIn('{{$randomLoremSentence}}'));\r",
+									"pm.environment.set(\"activity1_type\", pm.variables.replaceIn('{{$randomAdjective}}'));"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let responsePayload = pm.response.json().payload;\r",
+									"pm.environment.set(\"activity1_id\", responsePayload[0].activity_id);\r",
+									"\r",
+									"pm.test(\"Response has status code 200\", () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Response has specified activity data\", () => {\r",
+									"    pm.expect(responsePayload[0]).to.have.ownProperty(\"organiser_id\"); \r",
+									"    pm.expect(responsePayload[0].organiser_id).to.equal(pm.environment.get(\"aID\"));\r",
+									"    pm.expect(responsePayload[0]).to.have.ownProperty(\"location_name\"); \r",
+									"    pm.expect(responsePayload[0].location_name).to.equal(pm.environment.get(\"activity1_location\"));\r",
+									"    pm.expect(responsePayload[0]).to.have.ownProperty(\"max_attendees\"); \r",
+									"    pm.expect(responsePayload[0].max_attendees).to.equal(pm.environment.get(\"activity1_attendees\"));\r",
+									"    pm.expect(responsePayload[0]).to.have.ownProperty(\"date_time\"); \r",
+									"    pm.expect(responsePayload[0].date_time).to.equal(pm.environment.get(\"activity1_datetime\"));\r",
+									"    pm.expect(responsePayload[0]).to.have.ownProperty(\"description\"); \r",
+									"    pm.expect(responsePayload[0].description).to.equal(pm.environment.get(\"activity1_description\"));\r",
+									"    pm.expect(responsePayload[0]).to.have.ownProperty(\"type\"); \r",
+									"    pm.expect(responsePayload[0].type).to.equal(pm.environment.get(\"activity1_type\"));\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{aID}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{    \"location_name\": \"{{activity1_location}}\",\r\n    \"max_attendees\": {{activity1_attendees}},\r\n    \"date_time\": \"{{activity1_datetime}}\",\r\n    \"description\": \"{{activity1_description}}\",\r\n    \"type\": \"{{activity1_type}}\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/activities",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"activities"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User A creates Activity2",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"activity2_location\", pm.variables.replaceIn('{{$randomCity}}'));\r",
+									"pm.environment.set(\"activity2_attendees\", Number(pm.variables.replaceIn('{{$randomInt}}')));\r",
+									"pm.environment.set(\"activity2_datetime\", pm.variables.replaceIn('{{$isoTimestamp}}'));\r",
+									"pm.environment.set(\"activity2_description\", pm.variables.replaceIn('{{$randomLoremSentence}}'));\r",
+									"pm.environment.set(\"activity2_type\", pm.variables.replaceIn('{{$randomAdjective}}'));"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let responsePayload = pm.response.json().payload;\r",
+									"pm.environment.set(\"activity2_id\", responsePayload[0].activity_id);\r",
+									"\r",
+									"pm.test(\"Response has status code 200\", () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Response has specified activity data\", () => {\r",
+									"    pm.expect(responsePayload[0]).to.have.ownProperty(\"organiser_id\"); \r",
+									"    pm.expect(responsePayload[0].organiser_id).to.equal(pm.environment.get(\"aID\"));\r",
+									"    pm.expect(responsePayload[0]).to.have.ownProperty(\"location_name\"); \r",
+									"    pm.expect(responsePayload[0].location_name).to.equal(pm.environment.get(\"activity2_location\"));\r",
+									"    pm.expect(responsePayload[0]).to.have.ownProperty(\"max_attendees\"); \r",
+									"    pm.expect(responsePayload[0].max_attendees).to.equal(pm.environment.get(\"activity2_attendees\"));\r",
+									"    pm.expect(responsePayload[0]).to.have.ownProperty(\"date_time\"); \r",
+									"    pm.expect(responsePayload[0].date_time).to.equal(pm.environment.get(\"activity2_datetime\"));\r",
+									"    pm.expect(responsePayload[0]).to.have.ownProperty(\"description\"); \r",
+									"    pm.expect(responsePayload[0].description).to.equal(pm.environment.get(\"activity2_description\"));\r",
+									"    pm.expect(responsePayload[0]).to.have.ownProperty(\"type\"); \r",
+									"    pm.expect(responsePayload[0].type).to.equal(pm.environment.get(\"activity2_type\"));\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{aID}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{    \"location_name\": \"{{activity2_location}}\",\r\n    \"max_attendees\": {{activity2_attendees}},\r\n    \"date_time\": \"{{activity2_datetime}}\",\r\n    \"description\": \"{{activity2_description}}\",\r\n    \"type\": \"{{activity2_type}}\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/activities",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"activities"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User A creates Activity3",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"activity3_location\", pm.variables.replaceIn('{{$randomCity}}'));\r",
+									"pm.environment.set(\"activity3_attendees\", Number(pm.variables.replaceIn('{{$randomInt}}')));\r",
+									"pm.environment.set(\"activity3_datetime\", pm.variables.replaceIn('{{$isoTimestamp}}'));\r",
+									"pm.environment.set(\"activity3_description\", pm.variables.replaceIn('{{$randomLoremSentence}}'));\r",
+									"pm.environment.set(\"activity3_type\", pm.variables.replaceIn('{{$randomAdjective}}'));"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let responsePayload = pm.response.json().payload;\r",
+									"pm.environment.set(\"activity3_id\", responsePayload[0].activity_id);\r",
+									"\r",
+									"pm.test(\"Response has status code 200\", () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Response has specified activity data\", () => {\r",
+									"    pm.expect(responsePayload[0]).to.have.ownProperty(\"organiser_id\"); \r",
+									"    pm.expect(responsePayload[0].organiser_id).to.equal(pm.environment.get(\"aID\"));\r",
+									"    pm.expect(responsePayload[0]).to.have.ownProperty(\"location_name\"); \r",
+									"    pm.expect(responsePayload[0].location_name).to.equal(pm.environment.get(\"activity3_location\"));\r",
+									"    pm.expect(responsePayload[0]).to.have.ownProperty(\"max_attendees\"); \r",
+									"    pm.expect(responsePayload[0].max_attendees).to.equal(pm.environment.get(\"activity3_attendees\"));\r",
+									"    pm.expect(responsePayload[0]).to.have.ownProperty(\"date_time\"); \r",
+									"    pm.expect(responsePayload[0].date_time).to.equal(pm.environment.get(\"activity3_datetime\"));\r",
+									"    pm.expect(responsePayload[0]).to.have.ownProperty(\"description\"); \r",
+									"    pm.expect(responsePayload[0].description).to.equal(pm.environment.get(\"activity3_description\"));\r",
+									"    pm.expect(responsePayload[0]).to.have.ownProperty(\"type\"); \r",
+									"    pm.expect(responsePayload[0].type).to.equal(pm.environment.get(\"activity3_type\"));\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{aID}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{    \"location_name\": \"{{activity3_location}}\",\r\n    \"max_attendees\": {{activity3_attendees}},\r\n    \"date_time\": \"{{activity3_datetime}}\",\r\n    \"description\": \"{{activity3_description}}\",\r\n    \"type\": \"{{activity3_type}}\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/activities",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"activities"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User A views the activities they are attending",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let responsePayload = pm.response.json().payload;\r",
+									"\r",
+									"pm.test(\"Response has status code 200\", () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Response has three activities\", () => {\r",
+									"    pm.expect(responsePayload.length).to.equal(3);\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{aID}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/participants/attending",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"participants",
+								"attending"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User A views activities",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let responsePayload = pm.response.json().payload;\r",
+									"\r",
+									"pm.test(\"Response has status code 200\", () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Response does not have Activity1 data\", () => {\r",
+									"    pm.expect(responsePayload).to.not.deep.include({\r",
+									"            \"activity_id\": pm.environment.get(\"activity1_id\"),\r",
+									"            \"organiser_id\": pm.environment.get(\"aID\"),\r",
+									"            \"location_name\": pm.environment.get(\"activity1_location\"),\r",
+									"            \"max_attendees\": pm.environment.get(\"activity1_attendees\"),\r",
+									"            \"date_time\": pm.environment.get(\"activity1_datetime\"),\r",
+									"            \"description\": pm.environment.get(\"activity1_description\"),\r",
+									"            \"type\": pm.environment.get(\"activity1_type\"),\r",
+									"            \"user_id\": pm.environment.get(\"aID\"),\r",
+									"            \"user_name\": pm.environment.get(\"aName\"),\r",
+									"            \"email\": pm.environment.get(\"aEmail\")\r",
+									"        })\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Response does not have Activity2 data\", () => {\r",
+									"    pm.expect(responsePayload).to.not.deep.include({\r",
+									"            \"activity_id\": pm.environment.get(\"activity2_id\"),\r",
+									"            \"organiser_id\": pm.environment.get(\"aID\"),\r",
+									"            \"location_name\": pm.environment.get(\"activity2_location\"),\r",
+									"            \"max_attendees\": pm.environment.get(\"activity2_attendees\"),\r",
+									"            \"date_time\": pm.environment.get(\"activity2_datetime\"),\r",
+									"            \"description\": pm.environment.get(\"activity2_description\"),\r",
+									"            \"type\": pm.environment.get(\"activity2_type\"),\r",
+									"            \"user_id\": pm.environment.get(\"aID\"),\r",
+									"            \"user_name\": pm.environment.get(\"aName\"),\r",
+									"            \"email\": pm.environment.get(\"aEmail\")\r",
+									"        })\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Response does not have Activity3 data\", () => {\r",
+									"    pm.expect(responsePayload).to.not.deep.include({\r",
+									"            \"activity_id\": pm.environment.get(\"activity3_id\"),\r",
+									"            \"organiser_id\": pm.environment.get(\"aID\"),\r",
+									"            \"location_name\": pm.environment.get(\"activity3_location\"),\r",
+									"            \"max_attendees\": pm.environment.get(\"activity3_attendees\"),\r",
+									"            \"date_time\": pm.environment.get(\"activity3_datetime\"),\r",
+									"            \"description\": pm.environment.get(\"activity3_description\"),\r",
+									"            \"type\": pm.environment.get(\"activity3_type\"),\r",
+									"            \"user_id\": pm.environment.get(\"aID\"),\r",
+									"            \"user_name\": pm.environment.get(\"aName\"),\r",
+									"            \"email\": pm.environment.get(\"aEmail\")\r",
+									"        })\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{aID}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/activities",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"activities"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User B signs up",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const a = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);\r",
+									"\r",
+									"pm.environment.set(\"bID\", `${a}`);\r",
+									"pm.environment.set(\"bName\", pm.variables.replaceIn('{{$randomFullName}}'));\r",
+									"pm.environment.set(\"bEmail\", pm.variables.replaceIn('{{$randomEmail}}'));"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let responsePayload = pm.response.json().payload;\r",
+									"\r",
+									"pm.test(\"Response has status code 200\", () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Response contains specified user data.\", () => {\r",
+									"    pm.expect(responsePayload[0]).to.have.ownProperty(\"user_name\"); \r",
+									"    pm.expect(responsePayload[0].user_name).to.equal(pm.environment.get(\"bName\"));\r",
+									"    pm.expect(responsePayload[0]).to.have.ownProperty(\"email\"); \r",
+									"    pm.expect(responsePayload[0].email).to.equal(pm.environment.get(\"bEmail\"));\r",
+									"    pm.expect(responsePayload[0]).to.have.ownProperty(\"user_id\"); \r",
+									"    pm.expect(responsePayload[0].user_id).to.equal(pm.environment.get(\"bID\"));\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{bID}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"user_name\": \"{{bName}}\",\r\n    \"email\": \"{{bEmail}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User B views activities",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let responsePayload = pm.response.json().payload;\r",
+									"\r",
+									"pm.test(\"Response has status code 200\", () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Response has Activity1 data\", () => {\r",
+									"    pm.expect(responsePayload).to.deep.include({\r",
+									"            \"activity_id\": pm.environment.get(\"activity1_id\"),\r",
+									"            \"organiser_id\": pm.environment.get(\"aID\"),\r",
+									"            \"location_name\": pm.environment.get(\"activity1_location\"),\r",
+									"            \"max_attendees\": pm.environment.get(\"activity1_attendees\"),\r",
+									"            \"date_time\": pm.environment.get(\"activity1_datetime\"),\r",
+									"            \"description\": pm.environment.get(\"activity1_description\"),\r",
+									"            \"type\": pm.environment.get(\"activity1_type\"),\r",
+									"            \"user_id\": pm.environment.get(\"aID\"),\r",
+									"            \"user_name\": pm.environment.get(\"aName\"),\r",
+									"            \"email\": pm.environment.get(\"aEmail\")\r",
+									"        })\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Response has Activity2 data\", () => {\r",
+									"    pm.expect(responsePayload).to.deep.include({\r",
+									"            \"activity_id\": pm.environment.get(\"activity2_id\"),\r",
+									"            \"organiser_id\": pm.environment.get(\"aID\"),\r",
+									"            \"location_name\": pm.environment.get(\"activity2_location\"),\r",
+									"            \"max_attendees\": pm.environment.get(\"activity2_attendees\"),\r",
+									"            \"date_time\": pm.environment.get(\"activity2_datetime\"),\r",
+									"            \"description\": pm.environment.get(\"activity2_description\"),\r",
+									"            \"type\": pm.environment.get(\"activity2_type\"),\r",
+									"            \"user_id\": pm.environment.get(\"aID\"),\r",
+									"            \"user_name\": pm.environment.get(\"aName\"),\r",
+									"            \"email\": pm.environment.get(\"aEmail\")\r",
+									"        })\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Response has Activity3 data\", () => {\r",
+									"    pm.expect(responsePayload).to.deep.include({\r",
+									"            \"activity_id\": pm.environment.get(\"activity3_id\"),\r",
+									"            \"organiser_id\": pm.environment.get(\"aID\"),\r",
+									"            \"location_name\": pm.environment.get(\"activity3_location\"),\r",
+									"            \"max_attendees\": pm.environment.get(\"activity3_attendees\"),\r",
+									"            \"date_time\": pm.environment.get(\"activity3_datetime\"),\r",
+									"            \"description\": pm.environment.get(\"activity3_description\"),\r",
+									"            \"type\": pm.environment.get(\"activity3_type\"),\r",
+									"            \"user_id\": pm.environment.get(\"aID\"),\r",
+									"            \"user_name\": pm.environment.get(\"aName\"),\r",
+									"            \"email\": pm.environment.get(\"aEmail\")\r",
+									"        })\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{bID}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/activities",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"activities"
+							],
+							"query": [
+								{
+									"key": null,
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User B swipes right on Activity1",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"b_activity1_role\", \"interested\");"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responsePayload = pm.response.json().payload;\r",
+									"const participant_id = responsePayload[0].participant_id;\r",
+									"pm.environment.set(\"b_activity1_participant_id\", participant_id);\r",
+									" \r",
+									"pm.test(\"Response has status code 200\", () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Response contains specified participant data.\", () => {\r",
+									"    pm.expect(responsePayload).to.deep.include({\r",
+									"        \"participant_id\": participant_id,\r",
+									"        \"user_id\": pm.environment.get(\"bID\"),\r",
+									"        \"activity_id\": pm.environment.get(\"activity1_id\"),\r",
+									"        \"participant_role\": pm.environment.get(\"b_activity1_role\")\r",
+									"    })\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{bID}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"activity_id\" : \"{{activity1_id}}\",\r\n   \"participant_role\" : \"{{b_activity1_role}}\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/participants",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"participants"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User B swipes left on Activity2",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"b_activity2_role\", \"uninterested\");"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responsePayload = pm.response.json().payload;\r",
+									"const participant_id = responsePayload[0].participant_id;\r",
+									"pm.environment.set(\"b_activity2_participant_id\", participant_id);\r",
+									" \r",
+									"pm.test(\"Response has status code 200\", () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Response contains specified participant data.\", () => {\r",
+									"    pm.expect(responsePayload).to.deep.include({\r",
+									"        \"participant_id\": participant_id,\r",
+									"        \"user_id\": pm.environment.get(\"bID\"),\r",
+									"        \"activity_id\": pm.environment.get(\"activity2_id\"),\r",
+									"        \"participant_role\": pm.environment.get(\"b_activity2_role\")\r",
+									"    })\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{bID}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"activity_id\" : \"{{activity2_id}}\",\r\n   \"participant_role\" : \"{{b_activity2_role}}\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/participants",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"participants"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User B views the activities they're interested in",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let responsePayload = pm.response.json().payload;\r",
+									"\r",
+									"pm.test(\"Response has status code 200\", () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Response has specified activity data\", () => {\r",
+									"    pm.expect(responsePayload).to.deep.include({\r",
+									"            \"activity_id\": pm.environment.get(\"activity1_id\"),\r",
+									"            \"organiser_id\": pm.environment.get(\"aID\"),\r",
+									"            \"location_name\": pm.environment.get(\"activity1_location\"),\r",
+									"            \"max_attendees\": pm.environment.get(\"activity1_attendees\"),\r",
+									"            \"date_time\": pm.environment.get(\"activity1_datetime\"),\r",
+									"            \"description\": pm.environment.get(\"activity1_description\"),\r",
+									"            \"type\": pm.environment.get(\"activity1_type\"),\r",
+									"            \"participant_id\": pm.environment.get(\"b_activity1_participant_id\"),\r",
+									"            \"user_id\": pm.environment.get(\"bID\"),\r",
+									"            \"participant_role\": pm.environment.get(\"b_activity1_role\")\r",
+									"        })\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Response has only one activity\", () => {\r",
+									"    pm.expect(responsePayload.length).to.equal(1);\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{bID}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/participants/interested",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"participants",
+								"interested"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User B clicks \"Attend\" for Activity1",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"b_activity1_role\", \"attending\");"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responsePayload = pm.response.json().payload;\r",
+									"const participant_id = responsePayload[0].participant_id;\r",
+									" \r",
+									"pm.test(\"Response has status code 200\", () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Response contains specified participant data.\", () => {\r",
+									"    pm.expect(responsePayload).to.deep.include({\r",
+									"        \"participant_id\": participant_id,\r",
+									"        \"user_id\": pm.environment.get(\"bID\"),\r",
+									"        \"activity_id\": pm.environment.get(\"activity1_id\"),\r",
+									"        \"participant_role\": pm.environment.get(\"b_activity1_role\")\r",
+									"    })\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{bID}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"activity_id\" : \"{{activity1_id}}\",\r\n   \"participant_role\" : \"{{b_activity1_role}}\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/participants",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"participants"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User B views the activities they are attending",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let responsePayload = pm.response.json().payload;\r",
+									"\r",
+									"pm.test(\"Response has status code 200\", () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Response has specified activity data\", () => {\r",
+									"    pm.expect(responsePayload).to.deep.include({\r",
+									"            \"activity_id\": pm.environment.get(\"activity1_id\"),\r",
+									"            \"organiser_id\": pm.environment.get(\"aID\"),\r",
+									"            \"location_name\": pm.environment.get(\"activity1_location\"),\r",
+									"            \"max_attendees\": pm.environment.get(\"activity1_attendees\"),\r",
+									"            \"date_time\": pm.environment.get(\"activity1_datetime\"),\r",
+									"            \"description\": pm.environment.get(\"activity1_description\"),\r",
+									"            \"type\": pm.environment.get(\"activity1_type\"),\r",
+									"            \"participant_id\": pm.environment.get(\"b_activity1_participant_id\"),\r",
+									"            \"user_id\": pm.environment.get(\"bID\"),\r",
+									"            \"participant_role\": pm.environment.get(\"b_activity1_role\")\r",
+									"        })\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Response has only one activity\", () => {\r",
+									"    pm.expect(responsePayload.length).to.equal(1);\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{bID}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/participants/attending",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"participants",
+								"attending"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User B views activities they haven't swiped on yet",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let responsePayload = pm.response.json().payload;\r",
+									"\r",
+									"pm.test(\"Response has status code 200\", () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Response does not have Activity1 data\", () => {\r",
+									"    pm.expect(responsePayload).to.not.deep.include({\r",
+									"            \"activity_id\": pm.environment.get(\"activity1_id\"),\r",
+									"            \"organiser_id\": pm.environment.get(\"aID\"),\r",
+									"            \"location_name\": pm.environment.get(\"activity1_location\"),\r",
+									"            \"max_attendees\": pm.environment.get(\"activity1_attendees\"),\r",
+									"            \"date_time\": pm.environment.get(\"activity1_datetime\"),\r",
+									"            \"description\": pm.environment.get(\"activity1_description\"),\r",
+									"            \"type\": pm.environment.get(\"activity1_type\"),\r",
+									"            \"user_id\": pm.environment.get(\"aID\"),\r",
+									"            \"user_name\": pm.environment.get(\"aName\"),\r",
+									"            \"email\": pm.environment.get(\"aEmail\")\r",
+									"        })\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Response does not have Activity2 data\", () => {\r",
+									"    pm.expect(responsePayload).to.not.deep.include({\r",
+									"            \"activity_id\": pm.environment.get(\"activity2_id\"),\r",
+									"            \"organiser_id\": pm.environment.get(\"aID\"),\r",
+									"            \"location_name\": pm.environment.get(\"activity2_location\"),\r",
+									"            \"max_attendees\": pm.environment.get(\"activity2_attendees\"),\r",
+									"            \"date_time\": pm.environment.get(\"activity2_datetime\"),\r",
+									"            \"description\": pm.environment.get(\"activity2_description\"),\r",
+									"            \"type\": pm.environment.get(\"activity2_type\"),\r",
+									"            \"user_id\": pm.environment.get(\"aID\"),\r",
+									"            \"user_name\": pm.environment.get(\"aName\"),\r",
+									"            \"email\": pm.environment.get(\"aEmail\")\r",
+									"        })\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Response has Activity3 data\", () => {\r",
+									"    pm.expect(responsePayload).to.deep.include({\r",
+									"            \"activity_id\": pm.environment.get(\"activity3_id\"),\r",
+									"            \"organiser_id\": pm.environment.get(\"aID\"),\r",
+									"            \"location_name\": pm.environment.get(\"activity3_location\"),\r",
+									"            \"max_attendees\": pm.environment.get(\"activity3_attendees\"),\r",
+									"            \"date_time\": pm.environment.get(\"activity3_datetime\"),\r",
+									"            \"description\": pm.environment.get(\"activity3_description\"),\r",
+									"            \"type\": pm.environment.get(\"activity3_type\"),\r",
+									"            \"user_id\": pm.environment.get(\"aID\"),\r",
+									"            \"user_name\": pm.environment.get(\"aName\"),\r",
+									"            \"email\": pm.environment.get(\"aEmail\")\r",
+									"        })\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{bID}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/activities",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"activities"
+							],
+							"query": [
+								{
+									"key": null,
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
