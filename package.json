@@ -11,6 +11,7 @@
     "db:deploy": "node ./db/scripts/users/createTable.js && node ./db/scripts/users/populateTable.js",
     "db:deleteAllTables": "node -r dotenv/config ./db/scripts/deleteAllTables.js",
     "db:setup-test-db": "cross-env-shell NODE_ENV=test \"npm run db:createalltables && npm run db:populateAllTables\"",
+    "db:reset-test-db": "cross-env NODE_ENV=test node -r dotenv/config ./db/scripts/truncateTables.js",
     "db:createusers": "node -r dotenv/config ./db/scripts/users/createTable.js",
     "db:populateusers": "node -r dotenv/config ./db/scripts/users/populateTable.js",
     "db:createlocations": "node -r dotenv/config ./db/scripts/locations/createTable.js",
