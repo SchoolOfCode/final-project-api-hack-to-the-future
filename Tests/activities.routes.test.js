@@ -67,8 +67,8 @@ describe("GET /activities", function () {
       success: true,
       payload: [
         {
-          activity_id: 1,
-          date_time: "2022-03-02T12:26:07.278Z",
+          activity_id: expect.any(Number),
+          date_time: expect.any(String),
           description:
             "All abilities welcome to a walk round Cannon Hill Park followed by coffee at the park cafe",
           email: "paddington@bear.com",
@@ -98,7 +98,7 @@ describe("POST /activities", function () {
       payload: [
         {
           activity_id: expect.any(Number),
-          date_time: "2022-02-27T09:38:38.393Z",
+          date_time: expect.any(String),
           description: "Let's get Korean food for lunch.",
           location_name: "Manchester",
           max_attendees: 4,
