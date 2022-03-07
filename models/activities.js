@@ -10,7 +10,7 @@ export async function getAllActivities(location, type, date, user_id) {
       WHERE user_id = $4
     )
     AND (activities.organiser_id != $4)
-    AND ($1::text is null OR $1::text = activities.type)
+    AND ($1::text is null OR activities.type ILIKE '%'||$1||'%')
     AND ($2::text is null OR activities.location_name ILIKE '%'||$2||'%')
     AND ($3::timestamp is null OR $3::timestamp = activities.date_time);`,
     [type, location, date, user_id]
