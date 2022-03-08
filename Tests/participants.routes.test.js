@@ -8,7 +8,7 @@ afterAll(async () => {
 
 describe("PUT /participants", function () {
   test("upserts a participants relationship to interested between user and activity and returns the data", async function () {
-    const user_id = "2";
+    const user_id = "1";
     const activity_id = 1;
     const participant_role = "interested";
     const expectedBody = {
@@ -34,7 +34,7 @@ describe("PUT /participants", function () {
   });
 
   test("upserts a participants relationship to attending between user and activity and returns the data", async function () {
-    const user_id = "2";
+    const user_id = "1";
     const activity_id = 1;
     const participant_role = "attending";
     const expectedBody = {
@@ -62,8 +62,7 @@ describe("PUT /participants", function () {
 
 describe("GET /participants", function () {
   test("gets all activities based on a user's role", async function () {
-    const user_id = "2";
-    const activity_id = 1;
+    const user_id = "1";
     const participant_role = "attending";
     const expectedBody = {
       success: true,
@@ -71,7 +70,7 @@ describe("GET /participants", function () {
         expect.objectContaining({
           participant_id: expect.any(Number),
           user_id: user_id,
-          activity_id: activity_id,
+          activity_id: expect.any(Number),
           participant_role: participant_role,
           organiser_id: expect.any(String),
           location_name: expect.any(String),
