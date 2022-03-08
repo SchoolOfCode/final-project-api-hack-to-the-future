@@ -9,6 +9,7 @@ export async function getAllActivities(location, type, date, user_id) {
       SELECT activity_id FROM participants
       WHERE user_id = $4
     )
+    AND (activities.date_time > CURRENT_TIMESTAMP)
     AND (activities.organiser_id != $4)
     AND ($1::text is null OR activities.type ILIKE '%'||$1||'%')
     AND ($2::text is null OR activities.location_name ILIKE '%'||$2||'%')

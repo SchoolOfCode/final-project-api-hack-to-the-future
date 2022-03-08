@@ -65,24 +65,23 @@ describe("GET /activities", function () {
   test("gives us back the activities that match the selected filters", async function () {
     const expectedBody = {
       success: true,
-      payload: [
-        {
+      payload: expect.arrayContaining([
+        expect.objectContaining({
           activity_id: expect.any(Number),
+          location_name: expect.any(String),
+          max_attendees: expect.any(Number),
           date_time: expect.any(String),
-          description:
-            "All abilities welcome to a walk round Cannon Hill Park followed by coffee at the park cafe",
-          email: "paddington@bear.com",
-          location_name: "Cannon Hill Park, Birmingham",
-          max_attendees: 8,
-          organiser_id: "1",
-          type: "walk",
-          user_id: "1",
-          user_name: "Paddington Bear",
-        },
-      ],
+          description: expect.any(String),
+          type: "restaurant",
+          email: expect.any(String),
+          organiser_id: expect.any(String),
+          user_id: expect.any(String),
+          user_name: expect.any(String),
+        }),
+      ]),
     };
     const actual = await request(app)
-      .get("/activities?type=walk")
+      .get("/activities?type=restaurant")
       .set("Authorization", "test_user_id");
     expect(actual.body).toStrictEqual(expectedBody);
     expect(actual.statusCode).toBe(200);
@@ -113,7 +112,7 @@ describe("POST /activities", function () {
       .send({
         location_name: "Manchester",
         max_attendees: 4,
-        date_time: "2022-02-27T09:38:38.393Z",
+        date_time: "2022-04-27T09:38:38.393Z",
         description: "Let's get Korean food for lunch.",
         type: "restaurant",
       });
