@@ -12,7 +12,11 @@ router.get("/:participant_role", async function (req, res, next) {
   if (user_id) {
     try {
       const participant_role = req.params.participant_role;
-      const activities = await getActivitiesByRole(user_id, participant_role);
+      const activities = await getActivitiesByRole(
+        user_id,
+        participant_role,
+        
+      );
       res.json({
         success: true,
         payload: activities,
@@ -44,7 +48,7 @@ router.put("/", async function (req, res, next) {
     } catch (error) {
       next(error);
     }
-  }else {
+  } else {
     res.json({ success: false, message: "Missing authorization header" });
   }
 });
