@@ -15,7 +15,8 @@ export async function getActivitiesByRole(user_id, participant_role) {
   LEFT JOIN participants
   on activities.activity_id=participants.activity_id
   WHERE participants.user_id=$1
-  AND participants.participant_role=$2;`;
+  AND participants.participant_role=$2
+  AND (activities.date_time > CURRENT_TIMESTAMP);`;
   const result = await db.query(sqlString, [user_id, participant_role]);
   return result.rows;
 }

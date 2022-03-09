@@ -12,7 +12,7 @@ router.get("/", async function (req, res, next) {
       const date = req.query.date;
       const type = req.query.type;
 
-      const activities = await getAllActivities(location, type, date);
+      const activities = await getAllActivities(location, type, date, user_id);
 
       res.json({
         success: true,
