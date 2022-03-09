@@ -2,7 +2,7 @@ import db from "../db/connection.js";
 
 export async function getAllActivities(location, type, date, user_id) {
   const result = await db.query(
-    `SELECT *
+    `SELECT activities.*, users.user_name as organiser_name
     FROM activities
       LEFT JOIN users ON activities.organiser_id = users.user_id
     WHERE activities.activity_id NOT IN (
