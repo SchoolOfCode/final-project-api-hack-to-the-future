@@ -134,9 +134,18 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
+									"//const iso = new Date(pm.variables.replaceIn('{{$randomDateFuture}}')).toISOString();\r",
+									"\r",
+									"var current_timestamp = new Date();\r",
+									"console.log(current_timestamp.toISOString())\r",
+									"// 2019-01-14T06:13:47.757Z\r",
+									"current_timestamp.setHours(current_timestamp.getHours() + 11); \r",
+									"console.log(current_timestamp.toISOString())\r",
+									"// 2019-01-14T17:13:47.757Z\r",
+									"\r",
 									"pm.environment.set(\"activity1_location\", pm.variables.replaceIn('{{$randomCity}}'));\r",
 									"pm.environment.set(\"activity1_attendees\", Number(pm.variables.replaceIn('{{$randomInt}}')));\r",
-									"pm.environment.set(\"activity1_datetime\", pm.variables.replaceIn('{{$isoTimestamp}}'));\r",
+									"pm.environment.set(\"activity1_datetime\", current_timestamp.toISOString());\r",
 									"pm.environment.set(\"activity1_description\", pm.variables.replaceIn('{{$randomLoremSentence}}'));\r",
 									"pm.environment.set(\"activity1_type\", pm.variables.replaceIn('{{$randomAdjective}}'));"
 								],
@@ -212,9 +221,18 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
+									"//const iso = new Date(pm.variables.replaceIn('{{$randomDateFuture}}')).toISOString();\r",
+									"\r",
+									"var current_timestamp = new Date();\r",
+									"console.log(current_timestamp.toISOString())\r",
+									"// 2019-01-14T06:13:47.757Z\r",
+									"current_timestamp.setHours(current_timestamp.getHours() + 11); \r",
+									"console.log(current_timestamp.toISOString())\r",
+									"// 2019-01-14T17:13:47.757Z\r",
+									"\r",
 									"pm.environment.set(\"activity2_location\", pm.variables.replaceIn('{{$randomCity}}'));\r",
 									"pm.environment.set(\"activity2_attendees\", Number(pm.variables.replaceIn('{{$randomInt}}')));\r",
-									"pm.environment.set(\"activity2_datetime\", pm.variables.replaceIn('{{$isoTimestamp}}'));\r",
+									"pm.environment.set(\"activity2_datetime\", current_timestamp.toISOString());\r",
 									"pm.environment.set(\"activity2_description\", pm.variables.replaceIn('{{$randomLoremSentence}}'));\r",
 									"pm.environment.set(\"activity2_type\", pm.variables.replaceIn('{{$randomAdjective}}'));"
 								],
@@ -290,9 +308,18 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
+									"const iso = new Date(pm.variables.replaceIn('{{$randomDateFuture}}')).toISOString();\r",
+									"\r",
+									"var current_timestamp = new Date();\r",
+									"console.log(current_timestamp.toISOString())\r",
+									"// 2019-01-14T06:13:47.757Z\r",
+									"current_timestamp.setHours(current_timestamp.getHours() + 11); \r",
+									"console.log(current_timestamp.toISOString())\r",
+									"// 2019-01-14T17:13:47.757Z\r",
+									"\r",
 									"pm.environment.set(\"activity3_location\", pm.variables.replaceIn('{{$randomCity}}'));\r",
 									"pm.environment.set(\"activity3_attendees\", Number(pm.variables.replaceIn('{{$randomInt}}')));\r",
-									"pm.environment.set(\"activity3_datetime\", pm.variables.replaceIn('{{$isoTimestamp}}'));\r",
+									"pm.environment.set(\"activity3_datetime\", current_timestamp.toISOString());\r",
 									"pm.environment.set(\"activity3_description\", pm.variables.replaceIn('{{$randomLoremSentence}}'));\r",
 									"pm.environment.set(\"activity3_type\", pm.variables.replaceIn('{{$randomAdjective}}'));"
 								],
