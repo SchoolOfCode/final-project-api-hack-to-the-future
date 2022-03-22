@@ -99,11 +99,24 @@ Our frontend is deployed through Netlify here: https://apptivity-app.netlify.app
 
 ## Setup to Run Locally <a name="setup"></a>
 
+### Scripts
+
+- "start": run the production server with Node
+- "dev": run the development server with Nodemon
+- "test-db-server": run the testing server with Nodemon and connection to the testing database
+- "test": run Jest/Supertest integration tests
+- "db:deploy": Create and populate the production database tables
+- "db:deleteAllTables": Delete all production database tables
+- "db:setup-test-db": Create and populate the test database tables
+- "db:reset-test-db": Reset the test database tables
+
+### Steps
+
 **To clone the repo:**
 
 ```
-git clone git@github.com:SchoolOfCode/final-project-front-end-hack-to-the-future.git
-cd final-project-front-end-hack-to-the-future
+git clone git@github.com:SchoolOfCode/final-project-api-hack-to-the-future.git
+cd final-project-api-hack-to-the-future
 ```
 
 **Create an .env file**
@@ -111,28 +124,28 @@ cd final-project-front-end-hack-to-the-future
 Create an .env file in the root folder with the following environment variables:
 
 ```
-REACT_APP_API_URL=<backend url>
-REACT_APP_AUTH0_DOMAIN=<your Auth0 domain>
-REACT_APP_AUTH0_CLIENT_ID=<your Auth0 client ID>
+DATABASE_URL=<your database connection string>
+TESTING_DATABASE_URL=<optional: a connection string for a testing or staging database>
 ```
 
-**To run the frontend:**
+**To setup up the production and testing databases:**
 
 ```
 npm i
-npm start
+npm run db:deploy
+npm run db:setup-test-db
+```
+
+**To run the backend locally:**
+
+```
+npm i
+npm run dev
 ```
 
 And go to http://localhost:3000
 
 **To run tests:**
-
-Go to the testing branch and install dependencies if needed
-
-```
-git checkout dev-cypress
-npm i
-```
 
 To run Jest unit tests:
 
@@ -140,11 +153,7 @@ To run Jest unit tests:
 npm test
 ```
 
-To run Cypress tests:
-
-```
-npm run cypress:open
-```
+To run Postman tests, find the Postman .json file in the \Tests folder and load it into Postman.
 
 ## Original Project Brief <a name="original-project-brief"></a>
 
