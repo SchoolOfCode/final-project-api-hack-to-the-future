@@ -72,6 +72,8 @@ The team used a Miro Board to brainstorm initial app ideas. We used dot voting t
 
 ## Database ERD <a name="erd"></a>
 
+![Database ERD](/readme_images/ERD.png)
+
 ## Project Next Steps <a name="project-next-steps"></a>
 
 ### Short-term: Email notifications for users
